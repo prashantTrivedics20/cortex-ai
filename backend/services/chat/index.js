@@ -16,5 +16,4 @@ app.listen(port, () => {
     connectDB()
   console.log(`chat service running on ${port}`)
 });
-  );
-});
+
