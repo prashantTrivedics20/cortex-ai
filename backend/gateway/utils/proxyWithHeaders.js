@@ -30,6 +30,14 @@ export const proxyWithUser =
 
     return proxyReqOpts;
 
+   },
+
+   proxyErrorHandler: (err, res, next) => {
+    console.error('Proxy error:', err.message);
+    res.status(500).json({
+      success: false,
+      message: 'Service unavailable'
+    });
    }
 
   }

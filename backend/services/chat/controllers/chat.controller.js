@@ -93,8 +93,6 @@ export const saveMessage =async(req,res)=>{
 
 }
 
-
-
 export const getMessages =async(req,res)=>{
 
  try{
@@ -107,7 +105,8 @@ export const getMessages =async(req,res)=>{
   })
   .sort({
    createdAt:1
-  });
+  })
+  .lean(); // Convert to plain JavaScript objects
 
   res.json(
    messages

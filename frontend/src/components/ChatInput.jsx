@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, Paperclip,  Square, Zap, MessageSquare, Code2, Presentation, Image as ImageIcon, Globe, FileText,X } from "lucide-react";
+import { Send, Paperclip, Square, Zap, MessageSquare, Code2, Presentation, Image as ImageIcon, Globe, FileText, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { addMessage, setArtifacts, setIsLoading } from "../redux/message.slice";
 import { sendPrompt } from "../features/agent.api";
@@ -12,161 +12,161 @@ import { useRef } from "react";
 export default function ChatInput({
   setBanner
 }) {
-  const [selectedAgent, setSelectedAgent] =useState("auto");
+  const [selectedAgent, setSelectedAgent] = useState("auto");
   const [value, setValue] = useState("");
-const [isListening, setIsListening] = useState(false);
+  const [isListening, setIsListening] = useState(false);
 
-const recognitionRef = useRef(null);
+  const recognitionRef = useRef(null);
   const dispatch = useDispatch();
   const { selectedConversation } = useSelector(state => state.conversation);
-   const { isLoading } = useSelector(state => state.message);
-const fileRef = useRef(null);
+  const { isLoading } = useSelector(state => state.message);
+  const fileRef = useRef(null);
 
-const [
+  const [
 
-selectedFile,
+    selectedFile,
 
-setSelectedFile
+    setSelectedFile
 
-]=useState(null);
+  ] = useState(null);
 
-   const placeholders={
+  const placeholders = {
 
-auto:"Ask CortexAI...",
+    auto: "Ask CortexAI...",
 
-chat:"Chat with CortexAI...",
+    chat: "Chat with CortexAI...",
 
-coding:"Describe the software you want...",
+    coding: "Describe the software you want...",
 
-pdf:"Generate a PDF about...",
+    pdf: "Generate a PDF about...",
 
-ppt:"Create a presentation about...",
+    ppt: "Create a presentation about...",
 
-image:"Describe the image...",
+    image: "Describe the image...",
 
-search:"Search the web..."
+    search: "Search the web..."
 
-};
+  };
 
-   const agents = [
+  const agents = [
 
-  {
-    id:"auto",
-    icon:Zap,
-    label:"Auto"
-  },
+    {
+      id: "auto",
+      icon: Zap,
+      label: "Auto"
+    },
 
-  {
-    id:"chat",
-    icon:MessageSquare,
-    label:"Chat"
-  },
+    {
+      id: "chat",
+      icon: MessageSquare,
+      label: "Chat"
+    },
 
-  {
-    id:"coding",
-    icon:Code2,
-    label:"Coding"
-  },
+    {
+      id: "coding",
+      icon: Code2,
+      label: "Coding"
+    },
 
-  {
-    id:"pdf",
-    icon:FileText,
-    label:"PDF"
-  },
+    {
+      id: "pdf",
+      icon: FileText,
+      label: "PDF"
+    },
 
-  {
-    id:"ppt",
-    icon:Presentation,
-    label:"PPT"
-  },
+    {
+      id: "ppt",
+      icon: Presentation,
+      label: "PPT"
+    },
 
-  {
-    id:"image",
-    icon:ImageIcon,
-    label:"Image"
-  },
+    {
+      id: "image",
+      icon: ImageIcon,
+      label: "Image"
+    },
 
-  {
-    id:"search",
-    icon:Globe,
-    label:"Search"
-  }
+    {
+      id: "search",
+      icon: Globe,
+      label: "Search"
+    }
 
-];
+  ];
 
-useEffect(() => {
+  useEffect(() => {
 
-  const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
 
-  if (!SpeechRecognition) return;
+    if (!SpeechRecognition) return;
 
-  const recognition = new SpeechRecognition();
+    const recognition = new SpeechRecognition();
 
-  recognition.lang = "en-IN";
+    recognition.lang = "en-IN";
 
-  recognition.interimResults = true;
+    recognition.interimResults = true;
 
-  recognition.continuous = true;
+    recognition.continuous = true;
 
-  recognition.onresult = (event) => {
+    recognition.onresult = (event) => {
 
-    let transcript = "";
+      let transcript = "";
 
-    for (
+      for (
 
-      let i = event.resultIndex;
+        let i = event.resultIndex;
 
-      i < event.results.length;
+        i < event.results.length;
 
-      i++
+        i++
 
-    ) {
+      ) {
 
-      transcript += event.results[i][0].transcript;
+        transcript += event.results[i][0].transcript;
+
+      }
+
+      setValue(transcript);
+
+    };
+
+    recognition.onend = () => {
+
+      setIsListening(false);
+
+    };
+
+    recognitionRef.current = recognition;
+
+  }, []);
+
+  const toggleMic = () => {
+
+    if (!recognitionRef.current) {
+
+      alert("Speech Recognition not supported");
+
+      return;
 
     }
 
-    setValue(transcript);
+    if (isListening) {
+
+      recognitionRef.current.stop();
+
+      setIsListening(false);
+
+    } else {
+
+      recognitionRef.current.start();
+
+      setIsListening(true);
+
+    }
 
   };
-
-  recognition.onend = () => {
-
-    setIsListening(false);
-
-  };
-
-  recognitionRef.current = recognition;
-
-}, []);
-
-const toggleMic = () => {
-
-  if (!recognitionRef.current) {
-
-    alert("Speech Recognition not supported");
-
-    return;
-
-  }
-
-  if (isListening) {
-
-    recognitionRef.current.stop();
-
-    setIsListening(false);
-
-  } else {
-
-    recognitionRef.current.start();
-
-    setIsListening(true);
-
-  }
-
-};
 
 
   const handleSend = async () => {
@@ -197,91 +197,92 @@ const toggleMic = () => {
 
       const formData = new FormData();
 
-formData.append(
-    "conversationId",
-    conversation._id
-);
+      formData.append(
+        "conversationId",
+        conversation._id
+      );
 
-formData.append(
-    "prompt",
-    prompt
-);
+      formData.append(
+        "prompt",
+        prompt
+      );
 
-formData.append(
-    "agent",
-    selectedAgent
-);
+      formData.append(
+        "agent",
+        selectedAgent
+      );
 
-if(selectedFile){
+      if (selectedFile) {
 
-    formData.append(
-        "file",
-        selectedFile
-    );
+        formData.append(
+          "file",
+          selectedFile
+        );
 
-}
+      }
 
-setSelectedFile(null)
+      setSelectedFile(null)
 
       const data = await sendPrompt(formData);
-    console.log(data)
-     dispatch(
-  addMessage({
-    role: "assistant",
-    content: data.answer,
-    images:data.images
-  })
-);
+      console.log(data)
+      dispatch(
+        addMessage({
+          role: "assistant",
+          content: data.answer,
+          images: data.images
+        })
+      );
 
-console.log(data)
+      console.log(data)
 
-if(data.artifacts){
-  dispatch(
-    setArtifacts(
-      data.artifacts
-    )
-  );
-}}
-catch(error){
+      if (data.artifacts) {
+        dispatch(
+          setArtifacts(
+            data.artifacts
+          )
+        );
+      }
+    }
+    catch (error) {
 
-  setBanner({
+      setBanner({
 
-    open:true,
+        open: true,
 
-    title:
-      error.response?.data?.title ||
-      "Something went wrong",
+        title:
+          error.response?.data?.title ||
+          "Something went wrong",
 
-    message:
-      error.response?.data?.message ||
-      "Please try again."
+        message:
+          error.response?.data?.message ||
+          "Please try again."
 
-  });
+      });
 
-}
-  finally {
-       dispatch(setIsLoading(false));
+    }
+    finally {
+      dispatch(setIsLoading(false));
     }
   };
 
   return (
-   <div className="w-full overflow-hidden px-3 md:px-5 py-4 border-t border-white/[0.06] bg-[#0d0f14]">
+    <div className="w-full overflow-hidden px-3 md:px-5 py-4 border-t border-white/[0.06] bg-[#0d0f14]">
       <div className="flex flex-col gap-2 bg-white/[0.03] border border-white/[0.07] rounded-2xl px-4 pt-3.5 pb-3">
 
 
-    <div className="flex w-[80%] gap-2 pr-2 flex-wrap">
+        <div className="flex w-[80%] gap-2 pr-2 flex-wrap">
 
-    {agents.map((agent) => {
+          {agents.map((agent) => {
 
-      const Icon = agent.icon;
-      const isActive = selectedAgent === agent.id;
+            const Icon = agent.icon;
+            const isActive = selectedAgent === agent.id;
 
-      return (
+            return (
 
-        <button
-          key={agent.id}
-          onClick={() => setSelectedAgent(agent.id)}
-          className={`
+              <button
+                key={agent.id}
+                onClick={() => setSelectedAgent(agent.id)}
+                className={`
             flex-shrink-0
             
             inline-flex
@@ -295,138 +296,137 @@ catch(error){
             border
             transition-all
 
-            ${
-              isActive
-                ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,.35)]"
-                : "bg-white/[0.03] text-slate-400 border-white/[0.06] hover:bg-white/[0.07]"
-            }
+            ${isActive
+                    ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,.35)]"
+                    : "bg-white/[0.03] text-slate-400 border-white/[0.06] hover:bg-white/[0.07]"
+                  }
           `}
-        >
+              >
 
-          <Icon
-            size={14}
-            className={
-              isActive
-                ? "text-white"
-                : "text-slate-500"
-            }
-          />
+                <Icon
+                  size={14}
+                  className={
+                    isActive
+                      ? "text-white"
+                      : "text-slate-500"
+                  }
+                />
 
-          {agent.label}
+                {agent.label}
 
-        </button>
+              </button>
 
-      );
+            );
 
-    })}
-
-
-</div>
-
-{
-
-selectedFile && (
-
-<div className="my-3">
-
-<div className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
-
-{
-
-selectedFile.type==="application/pdf"
-
-?
-
-<FileText
-
-size={16}
-
-className="text-red-400"
-
-/>
-
-:
+          })}
 
 
+        </div>
 
-selectedFile?.type.startsWith("image/")
+        {
 
-&&
+          selectedFile && (
 
-<img
+            <div className="my-3">
 
-src={URL.createObjectURL(selectedFile)}
+              <div className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
 
-className="h-10 w-10 rounded-xl object-cover mt-3"
+                {
 
-/>
+                  selectedFile.type === "application/pdf"
+
+                    ?
+
+                    <FileText
+
+                      size={16}
+
+                      className="text-red-400"
+
+                    />
+
+                    :
 
 
 
-}
+                    selectedFile?.type.startsWith("image/")
 
-<div>
+                    &&
 
-<p className="text-xs text-white">
+                    <img
 
-{
+                      src={URL.createObjectURL(selectedFile)}
 
-selectedFile.name
+                      className="h-10 w-10 rounded-xl object-cover mt-3"
 
-}
+                    />
 
-</p>
 
-<p className="text-[10px] text-slate-500">
 
-{
+                }
 
-Math.ceil(
+                <div>
 
-selectedFile.size/
+                  <p className="text-xs text-white">
 
-1024
+                    {
 
-)
+                      selectedFile.name
 
-}
+                    }
 
-KB
+                  </p>
 
-</p>
+                  <p className="text-[10px] text-slate-500">
 
-</div>
+                    {
 
-<button
+                      Math.ceil(
 
-onClick={()=>{
+                        selectedFile.size /
 
-setSelectedFile(null);
+                        1024
 
-fileRef.current.value="";
+                      )
 
-}}
+                    }
 
-className="ml-2"
+                    KB
 
->
+                  </p>
 
-<X
+                </div>
 
-size={14}
+                <button
 
-className="text-slate-500 hover:text-white"
+                  onClick={() => {
 
-/>
+                    setSelectedFile(null);
 
-</button>
+                    fileRef.current.value = "";
 
-</div>
+                  }}
 
-</div>
+                  className="ml-2"
 
-)
-}
+                >
+
+                  <X
+
+                    size={14}
+
+                    className="text-slate-500 hover:text-white"
+
+                  />
+
+                </button>
+
+              </div>
+
+            </div>
+
+          )
+        }
 
 
         {/* Textarea */}
@@ -434,8 +434,8 @@ className="text-slate-500 hover:text-white"
           value={value}
           onChange={e => setValue(e.target.value)}
           placeholder={
-placeholders[selectedAgent]
-}
+            placeholders[selectedAgent]
+          }
           rows={3}
           disabled={isLoading}
           className="w-full bg-transparent outline-none resize-none text-[14px] text-slate-200 placeholder:text-slate-600 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50"
@@ -446,42 +446,42 @@ placeholders[selectedAgent]
 
           {/* Left — attach + mic */}
           <div className="flex items-center gap-1">
-  <input
+            <input
 
-ref={fileRef}
+              ref={fileRef}
 
-type="file"
+              type="file"
 
-hidden
+              hidden
 
-accept=".pdf,image/*"
+              accept=".pdf,image/*"
 
-onChange={(e)=>{
+              onChange={(e) => {
 
-const file =
-e.target.files[0];
+                const file =
+                  e.target.files[0];
 
-if(file){
+                if (file) {
 
-setSelectedFile(file);
+                  setSelectedFile(file);
 
-}
+                }
 
-}}
+              }}
 
-/>
+            />
             <button className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer"
-            onClick={()=>
-fileRef.current.click()
-}
+              onClick={() =>
+                fileRef.current.click()
+              }
             >
               <Paperclip size={14} />
             </button>
-           <button
+            <button
 
-onClick={toggleMic}
+              onClick={toggleMic}
 
-className={`
+              className={`
 
 flex
 
@@ -499,39 +499,37 @@ transition-all
 
 cursor-pointer
 
-${
+${isListening
 
-isListening
+                  ?
 
-?
+                  "bg-red-500 text-white"
 
-"bg-red-500 text-white"
+                  :
 
-:
+                  "text-slate-600 hover:bg-white/[0.05]"
 
-"text-slate-600 hover:bg-white/[0.05]"
-
-}
+                }
 
 `}
 
->
+            >
 
-{
+              {
 
-isListening
+                isListening
 
-?
+                  ?
 
-<MicOff size={14}/>
+                  <MicOff size={14} />
 
-:
+                  :
 
-<Mic size={14}/>
+                  <Mic size={14} />
 
-}
+              }
 
-</button>
+            </button>
           </div>
 
           {/* Right — send / stop */}
@@ -542,8 +540,8 @@ isListening
               ${isLoading
                 ? "bg-white text-[#0d0f14] hover:bg-slate-200"
                 : value.trim()
-                ? "bg-gradient-to-br from-indigo-500 to-violet-700 hover:opacity-90 text-white"
-                : "bg-white/[0.05] text-slate-600 cursor-not-allowed"
+                  ? "bg-gradient-to-br from-indigo-500 to-violet-700 hover:opacity-90 text-white"
+                  : "bg-white/[0.05] text-slate-600 cursor-not-allowed"
               }`}
           >
             {isLoading ? <Square size={12} fill="currentColor" /> : <Send size={14} />}

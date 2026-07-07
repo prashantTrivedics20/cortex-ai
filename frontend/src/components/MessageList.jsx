@@ -103,31 +103,35 @@ useEffect(() => {
 
 }, [messages.length, isLoading]);
   useEffect(() => {
-    if (selectedConversation?.title === "New Chat") return;
+    // Don't fetch messages if no conversation is selected or if it's a new chat
+    if (!selectedConversation || selectedConversation?.title === "New Chat") return;
+    
     const get = async () => {
-      const data = await getMessages(selectedConversation?._id);
-      dispatch(setMessages(data));
-      const latestArtifactMessage =
-  [...data]
-    .reverse()
-    .find(
-      msg =>
-        msg.artifacts &&
-        msg.artifacts.length > 0
-    );
+      try {
+        const data = await getMessages(selectedConversation._id);
+        dispatch(setMessages(data));
+        const latestArtifactMessage =
+          [...data]
+            .reverse()
+            .find(
+              msg =>
+                msg.artifacts &&
+                msg.artifacts.length > 0
+            );
 
-if (latestArtifactMessage) {
-
-  dispatch(
-    setArtifacts(
-      latestArtifactMessage.artifacts
-    )
-  );
-
-}
+        if (latestArtifactMessage) {
+          dispatch(
+            setArtifacts(
+              latestArtifactMessage.artifacts
+            )
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
     };
     get();
-  }, [selectedConversation?._id]);
+  }, [selectedConversation]);
 
   return (
     <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

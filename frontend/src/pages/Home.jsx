@@ -18,8 +18,11 @@ function Home() {
   const login = async (token) => {
     try {
       const { data } = await api.post(`/api/auth/login`, { token });
+      
       console.log("Login response:", data);
       dispatch(setUserData(data.user));
+      setLoading(false);
+
     } catch (error) {
       console.error("Login API error:", error);
       throw error;
