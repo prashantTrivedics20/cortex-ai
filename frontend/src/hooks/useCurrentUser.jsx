@@ -7,9 +7,11 @@ import { setUserData } from '../redux/user.slice'
 function useCurrentUser() {
     const dispatch=useDispatch()
 useEffect(()=>{
+console.log('useCurrentUser hook - fetching current user...');
 const get=async ()=>{
     try {
         const {data}=await api.get("/api/me")
+        console.log('Current user API response:', data);
        dispatch(setUserData(data.user))
     } catch (error) {
         // User is not logged in, which is fine

@@ -39,6 +39,9 @@ const forwardRequest = async (targetUrl, req, res, includeUser = false) => {
       headers['x-user-id'] = req.user.userId;
       headers['x-user-email'] = req.user.email;
       headers['x-user-avatar'] = req.user.avatar || '';
+      console.log('Adding user headers:', { userId: req.user.userId, email: req.user.email });
+    } else if (includeUser && !req.user) {
+      console.warn('includeUser=true but req.user is missing!');
     }
 
     const options = {

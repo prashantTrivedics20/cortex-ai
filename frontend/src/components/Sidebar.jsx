@@ -29,20 +29,26 @@ const [showBilling, setShowBilling] =useState(false);
 
   useEffect(() => {
     // Only fetch conversations if user is logged in
+    console.log('Sidebar useEffect - userData:', userData);
+    
     if (!userData?._id) {
+      console.log('User not logged in, skipping conversation fetch');
       return;
     }
+    
+    console.log('Fetching conversations for user:', userData._id);
     
     const fetchConversations = async () => {
       try {
         const data = await getConversations();
+        console.log('Conversations fetched:', data);
         dispatch(setConversations(data));
       } catch (error) {
         console.error("Error fetching conversations:", error);
       }
     };
     fetchConversations();
-  }, [userData?._id]);
+  }, [userData, dispatch]); // Added userData and dispatch to dependencies
 
   const handleCreateConversation = () => {
     dispatch(setSelectedConversation(null));
